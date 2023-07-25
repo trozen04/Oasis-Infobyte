@@ -1,0 +1,116 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
+
+public class MCQSystem {
+    private static final String PRE_LOGIN_PASSWORD = "preloginpassword";
+    private static Map<String, String> userProfiles = new HashMap<>();
+    private static Map<String, String> userPasswords = new HashMap<>();
+    private static Map<String, Map<String, String>> userMCQAnswers = new HashMap<>();
+    private static boolean isLoggedIn = false;
+    private static String currentUser;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String input;
+
+        System.out.println("Welcome to MCQ System!");
+
+        while (true) {
+            if (!isLoggedIn) {
+                System.out.print("Enter Pre-Login Password: ");
+                input = scanner.nextLine();
+
+                if (input.equals(PRE_LOGIN_PASSWORD)) {
+                    isLoggedIn = true;
+                    System.out.print("Enter Username: ");
+                    String username = scanner.nextLine();
+                    if (!userProfiles.containsKey(username)) {
+                        System.out.println("User not found. Creating a new profile.");
+                        System.out.print("Enter Full Name: ");
+                        String fullName = scanner.nextLine();
+                        System.out.print("Enter Password: ");
+                        String password = scanner.nextLine();
+                        userProfiles.put(username, fullName);
+                        userPasswords.put(username, password);
+                        userMCQAnswers.put(username, new HashMap<>());
+                    }
+                    currentUser = username;
+                    System.out.println("Login successful!");
+                } else {
+                    System.out.println("Invalid Pre-Login Password. Try again!");
+                }
+            } else {
+                System.out.println("\nSelect an option:");
+                System.out.println("1. Update Profile and Password");
+                System.out.println("2. Select Answers for MCQs");
+                System.out.println("3. Timer and Auto Submit");
+                System.out.println("4. Close session and Logout");
+                System.out.print("Choice: ");
+                input = scanner.nextLine();
+
+                switch (input) {
+                    case "1":
+                        updateProfileAndPassword(scanner);
+                        break;
+                    case "2":
+                        selectMCQAnswers(scanner);
+                        break;
+                    case "3":
+                        timerAndAutoSubmit();
+                        break;
+                    case "4":
+                        closeSessionAndLogout();
+                        return;
+                    default:
+                        System.out.println("Invalid choice. Try again!");
+                        break;
+                }
+            }
+        }
+    }
+
+    private static void updateProfileAndPassword(Scanner scanner) {
+        System.out.println("Update Profile and Password:");
+        System.out.print("Enter Full Name: ");
+        String fullName = scanner.nextLine();
+        userProfiles.put(currentUser, fullName);
+
+        System.out.print("Enter New Password: ");
+        String newPassword = scanner.nextLine();
+        userPasswords.put(currentUser, newPassword);
+
+        System.out.println("Profile and Password updated successfully!");
+    }
+
+    private static void selectMCQAnswers(Scanner scanner) {
+        System.out.println("Select Answers for MCQs:");
+        Map<String, String> userAnswers = userMCQAnswers.get(currentUser);
+        // Implement the logic to display MCQ questions and receive user's answers here.
+        // You can use userAnswers.put(questionId, userSelectedOption) to store the answers.
+    }
+
+    private static void timerAndAutoSubmit() {
+        System.out.println("Timer started. You have 5 minutes to complete the MCQs.");
+
+        // Simulating a 5-minute timer (300 seconds)
+        try {
+            TimeUnit.SECONDS.sleep(300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Time's up! Auto-submitting your MCQ answers.");
+        // Implement the logic to auto-submit the MCQ answers here.
+
+        // After auto-submitting, you can call the method below to close the session.
+        closeSessionAndLogout();
+    }
+
+    private static void closeSessionAndLogout() {
+        isLoggedIn = false;
+        currentUser = null;
+        System.out.println("Session closed. Logged out successfully!");
+    }
+}
